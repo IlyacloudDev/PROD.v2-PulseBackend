@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.validators import RegexValidator, EmailValidator, MinLengthValidator
+from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
 
 
@@ -70,19 +71,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default=True,
         help_text=_("Whether the user's profile is publicly visible.")
     )
-    phone = models.CharField(
+    phone = PhoneNumberField(
         verbose_name=_("Phone"),
         max_length=20,
-        validators=[
-            RegexValidator(regex=r"^\+\d+$", message=_("Phone number must start with '+' followed by digits."))
-        ],
         help_text=_("User's phone number in international format.")
     )
-    image = models.ImageField(
-        verbose_name=_("Profile Image"),
+    image = models.URLField(
+        verbose_name=_("Profile Image URL"),
         max_length=200,
-        upload_to='avatars/',
-        help_text=_("Profile picture of the user.")
+        validators=[
+            MinLengthValidator(1)
+        ],
+        help_text=_("URL of the profile picture.")
     )
     country_code = models.CharField(
         verbose_name=_("Country Code"),
