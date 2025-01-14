@@ -2,7 +2,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import check_password
 from countries.models import Country
 from users.models import CustomUser
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 
