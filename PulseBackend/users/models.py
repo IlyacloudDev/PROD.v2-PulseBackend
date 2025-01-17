@@ -90,6 +90,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         help_text=_("ISO 3166-1 alpha-2 code of the user's country.")
     )
 
+    friends = models.ManyToManyField(
+        "self",
+        symmetrical=False,
+        related_name="friends_of",
+        blank=True,
+        verbose_name=_("Friends"),
+        help_text=_("List of user's friends.")
+    )
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = "login"
