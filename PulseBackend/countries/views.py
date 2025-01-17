@@ -11,7 +11,6 @@ class CountriesListAPIView(ListAPIView):
     """
     Retrieves a list of countries, with optional filtering by regions.
     """
-    queryset = _get_countries()
     serializer_class = CountriesListSerializer
 
     def get_queryset(self):
