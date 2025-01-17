@@ -49,3 +49,13 @@ def _set_a_new_password(password, user):
     user.set_password(password)
     user.save()
     return user
+
+
+def _validation_provided_login_to_get_user(value):
+    """
+    Validate that the user exists with the provided login.
+    """
+    target_user = CustomUser.objects.filter(login=value)
+    if not target_user:
+        raise ValidationError(_("User with this login does not exist."))
+    return CustomUser.objects.get(login=value)

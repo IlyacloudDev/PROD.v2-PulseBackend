@@ -4,7 +4,8 @@ from .services.users_serializers_services import (
     _create_new_customuser_instance_with_provided_data,
     _validation_the_old_password_when_changing_it,
     _validation_a_new_password_when_setting_it,
-    _set_a_new_password
+    _set_a_new_password,
+    _validation_provided_login_to_get_user
 )
 from .models import CustomUser
 
@@ -87,3 +88,34 @@ class UserUpdatePasswordSerializer(serializers.ModelSerializer):
         password = validated_data['new_password']
         user = instance
         return _set_a_new_password(password, user)
+
+
+class UserFriendAddRemoveSerializer(serializers.Serializer):
+    """
+    Serializer for adding or removing a user from the friends list.
+    """
+    login = serializers.CharField(required=True)
+
+    def validate_login(self, value):
+        """
+        Validate that the user exists with the provided login.
+        """
+        target_user = _validation_provided_login_to_get_user(value)
+        self.context['target_user'] = target_user
+        return value
+
+    def create(self, validated_data):
+        """
+        Perform the add or remove action based on the view's context.
+        """
+        user = self.context['request'].user
+        target_user = self.context.get('target_user')
+        action = self.context.get('action')
+
+        if target_user and target_user != user:
+            if action == 'add':
+                user.friends.add(target_user)
+            elif action == 'remove':
+                user.friends.remove(target_user)
+
+        return user
