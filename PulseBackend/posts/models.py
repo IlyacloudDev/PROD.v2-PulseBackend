@@ -26,22 +26,34 @@ class Post(models.Model):
         default=list,
         help_text=_("A list of tags associated with this post.")
     )
-    createdAt = models.DateTimeField(
+    created_at = models.DateTimeField(
         verbose_name=_("Created At"),
         auto_now_add=True,
         help_text=_("The date and time when the post was created.")
     )
-    likesCount = models.IntegerField(
+    likes_count = models.IntegerField(
         verbose_name=_("Likes Count"),
         default=0,
         validators=[MinValueValidator(0)],
         help_text=_("The number of likes this post has received.")
     )
-    dislikesCount = models.IntegerField(
+    liked_users = models.ManyToManyField(
+        CustomUser,
+        related_name="liked_posts",
+        verbose_name=_("Liked Users"),
+        help_text=_("Users who liked the post")
+    )
+    dislikes_count = models.IntegerField(
         verbose_name=_("Dislikes Count"),
         default=0,
         validators=[MinValueValidator(0)],
         help_text=_("The number of dislikes this post has received.")
+    )
+    disliked_users = models.ManyToManyField(
+        CustomUser,
+        related_name="disliked_posts",
+        verbose_name=_("Disliked Users"),
+        help_text=_("Users who disliked the post")
     )
 
     class Meta:
